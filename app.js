@@ -11,6 +11,11 @@ const session = require("express-session");
 //const bodyParser = require("body-parser");
 const axios = require("axios");
 var debug = require("debug")("personalapp:server");
+var bodyParser = require('body-parser')
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var jsonParser = bodyParser.json()
+
+
 
 // Now we create the server
 const app = express();
@@ -52,7 +57,7 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/demo", 
+app.get("/demo",
         function (req, res){res.render("demo");});
 
 app.get("/about", (request, response) => {
@@ -62,6 +67,42 @@ app.get("/about", (request, response) => {
 app.get("/form", (request,response) => {
   response.render("form")
 })
+
+app.get("/dataDemo", (request,response) => {
+  response.locals.name="Tim Hickey"
+  response.locals.vals =[1,2,3,4,5]
+  response.locals.people =[
+    {'name':'Tim','age':65},
+    {'name':'Yas','age':29}]
+  response.render("dataDemo")
+})
+
+app.get("/calendar", (request,response) => {
+  response.render("calendar")
+})
+
+app.get("/calendarview", (request,response) => {
+  response.render("calendarview")
+})
+
+app.get("/calendarview1", (request,response) => {
+  response.render("calendarview1")
+})
+
+
+
+app.get("/vendor", (request,response) => {
+  response.render("vendor")
+})
+
+app.post('/vendorHelper', (req,res) => {
+  // res.json(req.body)
+  res.locals.body = req.body
+  res.render('vendorInfo')
+})
+
+
+
 
 app.post("/showformdata", (request,response) => {
   response.json(request.body)
@@ -75,7 +116,7 @@ app.post("/showformdata", (request,response) => {
 // and send it back to the browser in raw JSON form, see
 // https://covidtracking.com/data/api
 // for all of the kinds of data you can get
-app.get("/c19", 
+app.get("/c19",
   async (req,res,next) => {
     try {
       const url = "https://covidtracking.com/api/v1/us/current.json"
